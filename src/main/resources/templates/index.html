@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{header.title}">Forecast 2023</title>
+</head>
+<body>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+        crossorigin="anonymous"></script>
+<div>
+    <h3 th:text="#{index.search.title}">Enter locations</h3>
+    <form method="POST" enctype="application/x-www-form-urlencoded"
+          th:method="POST" th:object="${locations}" th:action="@{'/'}">
+        <!--                <ul th:if="${errors} ne null" class="text-warning">-->
+        <!--                    <li th:text="${errors}"/>-->
+        <!--                </ul>-->
+        <div th:each="location, iterStat : ${locations}" class="row m-2 align-items-center">
+            <div class="col-auto">
+
+                <label for="locations" th:for="${location}" class="visually-hidden">Location:</label>
+                <input class="form-control" list="knownLocations" id="locations" name="locations" placeholder="Location"
+                       th:id="'locations[' + ${iterStat.index} + ']'"
+                       th:name="'locations[' + ${iterStat.index} + ']'"
+                       th:placeholder="${location}">
+            </div>
+        </div>
+        <datalist id="knownLocations">
+            <option th:each="knownLocation : ${knownLocations}" th:value="${knownLocation}">
+        </datalist>
+        <div class="row m-2 align-items-center">
+            <div class="col-auto">
+                <button class="btn btn-primary btn-block" type="submit" th:text="#{index.search.button}">Get
+                    Forecast
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="col-3 col-sm-8"> <!--fixme hide when results are empty -->
+    <!--  fixme example  th:if="${#lists.isEmpty(allResorts)}"-->
+    <h2 th:text="#{index.results}">Forecast</h2>
+    <table class="table table-striped">
+        <tr>
+            <th scope="col">Location</th>
+            <th scope="col">Date 1</th>
+            <th scope="col">Date 2</th>
+            <th scope="col">Date 3</th>
+            <th scope="col">Date 4</th>
+            <th scope="col">Date 5</th>
+        </tr>
+        <tr th:each="forecast : ${forecasts}">
+            <th scope="row" th:text="${forecast}">Location name</th>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            <td>5</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

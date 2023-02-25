@@ -1,0 +1,78 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.2'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.openapi.generator' version '6.4.0'
+}
+
+group = 'vitaliiev'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+// add openapi src dir
+sourceSets.main.java.srcDirs += "$buildDir/generated/src/main/java".toString()
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.session:spring-session-core'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    runtimeOnly 'com.h2database:h2'
+//    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    testImplementation 'org.springframework.security:spring-security-test'
+
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+    //    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+//    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+//    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
+
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/api.yaml".toString()
+    outputDir = "$buildDir/generated".toString()
+    apiPackage = "vitaliiev.forecast2023.api"
+//    invokerPackage = "org.openapi.example.invoker"
+    modelPackage = "vitaliiev.forecast2023.dto"
+    apiFilesConstrainedTo = [""]
+    modelFilesConstrainedTo = [""]
+//    supportingFilesConstrainedTo = [""]
+    supportingFilesConstrainedTo = ["ApiUtil.java"]
+    configOptions = [delegatePattern: "true",
+                     title          : "forecast2023",
+                     useJakartaEe   : "true"]
+    //    configOptions = [
+//            dateLibrary: "java8"
+//    ]
+    validateSpec = true
+//    importMappings = [Problem:"org.zalando.problem.Problem"]
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
