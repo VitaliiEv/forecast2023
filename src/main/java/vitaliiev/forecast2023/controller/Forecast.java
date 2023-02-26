@@ -1,5 +1,6 @@
 package vitaliiev.forecast2023.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,9 +8,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vitaliiev.forecast2023.dto.ForecastRequest;
+import vitaliiev.forecast2023.dto.Location;
+import vitaliiev.forecast2023.service.LocationsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Vitalii Solomonov
@@ -19,21 +24,26 @@ import java.util.List;
 @RequestMapping("/")
 public class Forecast {
 
+    @Autowired
+    private LocationsService locationsService;
+
     @GetMapping
     public String getIndex(Model model) {
-        List<String> knownLocations = new ArrayList<>();
-        knownLocations.add("Moscow"); // FIXME: 25.02.2023 fill from database
-        knownLocations.add("Moscow, RU");
-        knownLocations.add("Moscow, US");
-        knownLocations.add("Moscow, Idaho, US");
-        knownLocations.add("Paris");
-        model.addAttribute("knownLocations", knownLocations);
         return "index";
     }
 
     @PostMapping
     public String getForecast(@ModelAttribute ForecastRequest forecastRequest, Model model) {
-        List<String> forecasts = forecastRequest.getLocations(); // FIXME: 25.02.2023
+        var locationList = forecastRequest.getLocations()
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(l -> !l.isBlank())
+                .collect(Collectors.toList());
+        List<String> forecasts = this.locationsService
+                .findAllByDescription(locationList)
+                .stream()
+                .map(Location::toString)
+                .collect(Collectors.toList());
         model.addAttribute("forecasts", forecasts);
         return "index";
     }
@@ -48,6 +58,7 @@ public class Forecast {
         locations.add("Example: Moscow, Idaho, US");
         locations.add("Example: Paris");
         model.addAttribute("locations", locations);
+        model.addAttribute("knownLocations", this.locationsService.findAllAsString());
     }
 
 
