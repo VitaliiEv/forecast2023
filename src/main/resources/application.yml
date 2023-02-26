@@ -1,25 +1,13 @@
 forecast2023:
   lang: "ru"
   #fixme
-  owm-api-key: "null"
+  owm-api-key: 63aff41dd90c22e4314b07a1c08731db
 
 management:
   endpoints:
     web:
-      #      exposure:
-      #        #        include: ['health', 'prometheus']
-      #        #        include: ['configprops', 'env', 'info', 'health', 'prometheus']
-      #        include: '*'
+
       discovery:
         enabled: true
-
-# todo
-#springdoc:
-#  api-docs:
-#    groups:
-#      enabled: true
-#  show-actuator: true
-#  swagger-ui:
-#    tryItOutEnabled: true
-#    url: /api.yml
-#    enabled: true
+mapstruct:
+  defaultComponentModel: spring

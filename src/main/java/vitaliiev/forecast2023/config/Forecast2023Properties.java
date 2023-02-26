@@ -38,5 +38,4 @@ public class Forecast2023Properties {
         messageSource.setBasename("messages/Messages");
         return messageSource;
     }
-
 }
