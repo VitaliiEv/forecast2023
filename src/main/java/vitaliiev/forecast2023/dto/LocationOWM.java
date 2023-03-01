@@ -1,8 +1,12 @@
 package vitaliiev.forecast2023.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import vitaliiev.forecast2023.config.Forecast2023Properties;
 
 /**
  * @author Vitalii Solomonov
@@ -13,6 +17,7 @@ import lombok.Setter;
 public class LocationOWM {
 
     @JsonProperty("name")
+    @NotNull
     private String name;
 
     @JsonProperty("country")
@@ -23,9 +28,15 @@ public class LocationOWM {
 
 
     @JsonProperty("lat")
-    private Double latitude;
+    @NotNull
+    @Size(max = 20)
+    @Pattern(regexp = Forecast2023Properties.LATITUDE_PATTERN)
+    private String latitude;
 
     @JsonProperty("lon")
-    private Double longitude;
+    @NotNull
+    @Size(max = 20)
+    @Pattern(regexp = Forecast2023Properties.LONGITUDE_PATTERN)
+    private String longitude;
 
 }
