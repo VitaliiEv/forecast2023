@@ -4,14 +4,12 @@ spring:
       enabled: false
     livereload:
       enabled: false
-  #  datasource:
-  #    type: com.zaxxer.hikari.HikariDataSource
-  #    url: jdbc:postgresql://localhost:5432/forecast2023
-  #    username: forecast2023app
-  #    password:
-  #    hikari:
-  #      poolName: Hikari
-  #      auto-commit: false
+    add-properties: false
   datasource:
-    url: jdbc:h2:file:./build/h2db/db/forecast2023
-    driverClassName: org.h2.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://localhost:5432/forecast2023
+    username: forecast2023
+    password:
+    hikari:
+      poolName: Hikari
+      auto-commit: false

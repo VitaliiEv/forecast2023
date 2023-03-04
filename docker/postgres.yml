@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  forecast2023-postgresql:
+    image: postgres
+    environment:
+      - POSTGRES_USER=forecast2023
+      - POSTGRES_PASSWORD=
+    ports:
+      - "127.0.0.1:5432:5432"

@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  forecast2023:
+    image: forecast2023
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://forecast2023-postgresql:5432/forecast2023
+    ports:
+      - "127.0.0.1:8080:8080"
+  forecast2023-postgresql:
+    image: postgres
+    environment:
+      - POSTGRES_USER=forecast2023
+      - POSTGRES_PASSWORD=
+    ports:
+      - "127.0.0.1:5432:5432"

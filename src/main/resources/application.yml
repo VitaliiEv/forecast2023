@@ -1,14 +1,18 @@
 forecast2023:
   lang: "ru"
-  owm-api-key: 63aff41dd90c22e4314b07a1c08731db
   rest-api-url: 'http://localhost:8080/api/v1'
   obsolete: 60m
   data-points-reducer: default
+  owm-api-key:
 
 springdoc:
   api-docs:
     groups:
       enabled: true
 spring:
+  profiles:
+    active: dev
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: update
