@@ -1,0 +1,192 @@
+openapi: 3.0.3
+info:
+  title: Forecast API
+  description: Forecast API
+  version: 0.0.1
+servers:
+  - url: 'http://localhost:8080/api/v1'
+    description: Development server
+tags:
+  - name: Location
+    description: Получение сведений о локациях
+  - name: Forecast
+    description: Получение сведений о погоде
+paths:
+  /location:
+    get:
+      tags:
+        - Location
+      description: Получить список локаций
+      operationId: getLocations
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Locations'
+
+  /forecast:
+    post:
+      tags:
+        - Forecast
+      description: Получить прогноз погоды
+      operationId: getForecasts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForecastRequest'
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forecasts'
+
+components:
+  schemas:
+    ForecastRequest:
+      type: object
+      description: Запрос прогноза с перечнем геолокаций
+      properties:
+        locations:
+          type: array
+          description: Перечень геолокаций в текстовом виде
+          items:
+            type: string
+          example:
+            {
+              "locations": [
+                "Moscow",
+                "Moscow, RU",
+                "Moscow, US",
+                "Moscow, Idaho, US"
+              ]
+            }
+      required:
+        - locations
+
+    Forecasts:
+      type: array
+      description: Список прогнозов погоды для нескольких локаций
+      items:
+        $ref: '#/components/schemas/ForecastForLocation'
+    ForecastForLocation:
+      type: object
+      description: Прогноз погоды для локации
+      properties:
+        location-timestamp:
+          $ref: '#/components/schemas/LocationTimestamp'
+        forecast-data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ForecastData'
+      required:
+        - timestamp
+        - location
+        - forecast-data
+
+    Locations:
+      type: array
+      description: Список локаций
+      items:
+        $ref: '#/components/schemas/Location'
+    LocationTimestamp:
+      type: object
+      description: Локация c датой последнего прогноза
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Дата последнего прогноза
+        location:
+          $ref: '#/components/schemas/Location'
+      required:
+        - timestamp
+        - location
+    Location:
+      type: object
+      description: Локация для которой сделан прогноз
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: Наименование локации
+        country:
+          type: string
+          maxLength: 100
+          description: Страна
+        state:
+          type: string
+          maxLength: 100
+          description: Регион, штат, область и др.
+        latitude:
+          type: string
+          pattern: '^-?(((\d|[0-8]\d).\d{4,})|(90.0{4,}))$'
+          maxLength: 20
+          description: Географическая широта
+        longitude:
+          type: string
+          pattern: '^-?(((\d|\d\d|1[0-7]\d).\d{4,})|(180.0{4,}))$'
+          maxLength: 20
+          description: Географическая долгота
+      required:
+        - name
+        - latitude
+        - longitude
+
+    ForecastData:
+      type: object
+      description: Погодные условия
+      properties:
+        datetime:
+          type: string
+          format: date-time
+          description: Дата на которую сделан прогноз
+        temperature:
+          type: number
+          format: double
+          description: Средняя температура за день
+        temperatureFeelsLike:
+          type: number
+          format: double
+          description: Средняя температура в день по ощущениям
+        pressure:
+          type: number
+          format: double
+          description: Среднее давление в течение дня
+          minimum: 0
+        humidity:
+          type: integer
+          format: int32
+          description: Средняя влажность в течение дня
+          minimum: 0
+          maximum: 100
+        weatherDescription:
+          type: string
+          description: Описание погоды
+          maxLength: 100
+        windSpeed:
+          type: number
+          format: double
+          description: Скорость ветра
+          minimum: 0
+        windDirection:
+          type: string
+          description: Направление ветра
+          maxLength: 50
+      required:
+        - datetime
+        - temperature
+        - temperatureFeelsLike
+        - pressure
+        - humidity
+        - weatherDescription
+        - windSpeed
+        - windDirection
+
+#security:
+#  - jwt: []
