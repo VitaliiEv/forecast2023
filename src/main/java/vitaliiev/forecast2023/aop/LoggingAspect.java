@@ -32,7 +32,6 @@ public class LoggingAspect {
     @Pointcut(
             "within(@org.springframework.stereotype.Repository *)" +
                     " || within(@org.springframework.stereotype.Service *)" +
-//        " || within(@org.springframework.web.bind.annotation.RestController *)" +
                     " || within(@org.springframework.stereotype.Controller *)"
     )
     public void springBeanPointcut() {
@@ -43,10 +42,8 @@ public class LoggingAspect {
      * Pointcut that matches all Spring beans in the application's main packages.
      */
     @Pointcut("within(vitaliiev.forecast2023.repository..*)" +
-            " || within(vitaliiev.forecast2023.service..*)" +
-            " || within(vitaliiev.forecast2023.controller..*)"
-//          " || within(vitaliiev.forecast2023.web.rest..*)" +
-//          " || within(vitaliiev.forecast2023.web.delegate..*)"
+            " || within(vitaliiev.forecast2023.api..*)" +
+            " || within(vitaliiev.forecast2023.client..*)"
     )
     public void applicationPackagePointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.

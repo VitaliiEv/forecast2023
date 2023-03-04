@@ -8,8 +8,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
+import vitaliiev.forecast2023.openweathermap.reducers.DefaultForecastDataReducer;
+import vitaliiev.forecast2023.openweathermap.reducers.ForecastDataReducer;
+import vitaliiev.forecast2023.openweathermap.reducers.NoopForecastDataReducer;
 
+import java.time.Duration;
 import java.util.Locale;
 
 /**
@@ -20,15 +23,32 @@ import java.util.Locale;
 @ConfigurationProperties(prefix = "forecast2023")
 @Getter
 @Setter
-@Validated
 public class Forecast2023Properties {
+
+    public static final String LATITUDE_PATTERN = "^-?(((\\d|[0-8]\\d).\\d{4,})|(90.0{4,}))$";
+
+    public static final String LONGITUDE_PATTERN = "^-?(((\\d|\\d\\d|1[0-7]\\d).\\d{4,})|(180.0{4,}))$";
+
     @NotBlank
     @NotNull
     private String owmApiKey;
 
-    private String units = "metric"; //todo get this data from user locale settings
+    private String units = "metric";
 
-    private String lang = "en"; //todo get this data from user locale settings
+    private String lang = "ru";
+
+    private String restApiUrl = "http://localhost:8080/api/v1";
+
+    private Duration obsolete = Duration.ofHours(1);
+
+    private String dataPointsReducer = "default";
+
+    public ForecastDataReducer getForecastDataReducer() {
+        if (this.dataPointsReducer.equals("noop")) {
+            return new NoopForecastDataReducer();
+        }
+        return new DefaultForecastDataReducer();
+    }
 
     @Bean
     public ResourceBundleMessageSource messageSource() {
