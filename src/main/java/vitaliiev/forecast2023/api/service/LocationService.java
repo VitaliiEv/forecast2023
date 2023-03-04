@@ -58,7 +58,7 @@ public class LocationService {
         return this.repository.findAll();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public LocationModel findByDescription(String location) {
         try {
             return this.geocodeProvider.getLocation(location)
