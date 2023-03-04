@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author Vitalii Solomonov
@@ -28,7 +28,7 @@ public class ForecastDataModel {
     private Long id;
 
     @NotNull
-    private LocalDate datetime;
+    private LocalDateTime datetime;
 
     @NotNull
     private BigDecimal temperature;

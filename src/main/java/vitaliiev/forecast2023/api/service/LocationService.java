@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import vitaliiev.forecast2023.domain.LocationModel;
-import vitaliiev.forecast2023.dto.Location;
 import vitaliiev.forecast2023.exceptions.GeolocationProviderException;
 import vitaliiev.forecast2023.exceptions.LocationNotFound;
 import vitaliiev.forecast2023.mappers.LocationMapper;
@@ -62,19 +61,11 @@ public class LocationService {
     @Transactional(readOnly = true)
     public LocationModel findByDescription(String location) {
         try {
-            Location locationDTO = this.mapper.mapOwmDescriptionToLocation(location);
-            LocationModel model = this.mapper.dtoToModel(locationDTO);
-
             return this.geocodeProvider.getLocation(location)
                     .map(this.mapper::dtoToModel)
                     .map(l -> this.findOne(l)
                             .orElseGet(() -> this.create(l)))
                     .orElseThrow(() -> new LocationNotFound(location));
-//            return this.findOne(model)
-//                    .orElseGet(() -> this.geocodeProvider.getLocation(location)
-//                            .map(this.mapper::dtoToModel)
-//                            .map(this::create)
-//                            .orElseThrow(() -> new LocationNotFound(location)));
         } catch (GeolocationProviderException e) {
             return null;
         }

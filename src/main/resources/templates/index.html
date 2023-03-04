@@ -39,25 +39,37 @@
         </div>
     </form>
 </div>
-<div class="col-3 col-sm-8"> <!--fixme hide when results are empty -->
-    <!--  fixme example  th:if="${#lists.isEmpty(allResorts)}"-->
+<div class="col-3 col-sm-8" th:if="${not #lists.isEmpty(forecasts)}">
     <h2 th:text="#{index.results}">Forecast</h2>
     <table class="table table-striped">
         <tr>
-            <th scope="col">Location</th>
-            <th scope="col">Date 1</th>
-            <th scope="col">Date 2</th>
-            <th scope="col">Date 3</th>
-            <th scope="col">Date 4</th>
-            <th scope="col">Date 5</th>
+            <th scope="col" th:text="#{index.result.table.header.location}">Location</th>
+            <th th:each="date : ${dates}" th:text="${date.toString()}">Current date</th>
         </tr>
-        <tr th:each="forecast : ${forecasts}">
-            <th scope="row" th:text="${forecast}">Location name</th>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
-            <td>4</td>
-            <td>5</td>
+        <tr th:each="forecast : ${forecasts}" th:with="location=${forecast.getLocationTimestamp().getLocation()}">
+            <th scope="row" th:text="${location.getName()}
+            +(${location.getState() != null } ? (', ' + ${location.getState()}) : _)
+            +(${location.getCountry() != null } ? (', ' + ${location.getCountry()}) : _)">Location name
+            </th>
+            <td th:each="forecastData : ${forecast.getForecastData()}">
+                <table>
+                    <tr>
+                        <td th:text="#{index.results.table.data.temperature} + ${forecastData.getTemperature()}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="#{index.results.table.data.feelsLike} + ${forecastData.getTemperatureFeelsLike()}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="${forecastData.getWeatherDescription()}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="#{index.results.table.data.windSpeed} + ${forecastData.getWindSpeed()}"></td>
+                    </tr>
+                    <tr>
+                        <td th:text="#{index.results.table.data.windDirection} + ${forecastData.getWindDirection()}"></td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
 </div>

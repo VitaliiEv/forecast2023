@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import vitaliiev.forecast2023.dto.ForecastData;
 import vitaliiev.forecast2023.dto.ForecastForLocation;
 import vitaliiev.forecast2023.dto.ForecastRequest;
-import vitaliiev.forecast2023.dto.LocationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,12 +41,20 @@ public class ForecastController {
     public String getForecast(@ModelAttribute ForecastRequest forecastRequest, Model model) {
         var forecast = this.forecastService.getForecast(forecastRequest);
         var dates = forecast.stream()
-                .map(ForecastForLocation::getLocationTimestamp)
-                .map(LocationTimestamp::getTimestamp)
-                .map(LocalDateTime::toLocalDate)
-                .collect(Collectors.toList());
+                .findAny()
+                .map(ForecastForLocation::getForecastData)
+                .map(fd -> fd.stream()
+                        .map(ForecastData::getDatetime)
+                        .map(LocalDateTime::toLocalDate)
+                        .collect(Collectors.toList()))
+                .orElseThrow();
+//        var dates = forecast.stream()
+//                .map(ForecastForLocation::getLocationTimestamp)
+//                .map(LocationTimestamp::getTimestamp)
+//                .map(LocalDateTime::toLocalDate)
+//                .collect(Collectors.toList());
         model.addAttribute("dates", dates);
-        model.addAttribute("forecasts", this.forecastService.getForecast(forecastRequest));
+        model.addAttribute("forecasts", forecast);
         return "index";
     }
 

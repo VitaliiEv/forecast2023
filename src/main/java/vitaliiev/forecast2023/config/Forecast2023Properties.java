@@ -13,7 +13,6 @@ import vitaliiev.forecast2023.openweathermap.reducers.ForecastDataReducer;
 import vitaliiev.forecast2023.openweathermap.reducers.NoopForecastDataReducer;
 
 import java.time.Duration;
-import java.util.Locale;
 
 /**
  * @author Vitalii Solomonov
@@ -53,8 +52,7 @@ public class Forecast2023Properties {
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setDefaultLocale(Locale.ENGLISH);
-        messageSource.setFallbackToSystemLocale(false);
+        messageSource.setDefaultEncoding("UTF-8");
         messageSource.setBasename("messages/Messages");
         return messageSource;
     }
