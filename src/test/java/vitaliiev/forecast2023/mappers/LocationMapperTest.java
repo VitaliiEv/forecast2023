@@ -10,7 +10,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
  * @author Vitalii Solomonov
  * @date 02.03.2023
  */
-
 class LocationMapperTest {
 
     private final static LocationMapper locationMapper = new LocationMapperImpl();
