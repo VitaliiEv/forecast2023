@@ -55,10 +55,10 @@ public interface LocationMapper {
 
     default String locationToOwmDescriptionString(@Valid Location location) {
         var str = location.getName();
-        if (!location.getState().isEmpty()) {
+        if (location.getState() != null && !location.getState().isEmpty()) {
             str = str + ", " + location.getState();
         }
-        if (!location.getCountry().isEmpty()) {
+        if (location.getCountry() != null && !location.getCountry().isEmpty()) {
             str = str + ", " + location.getCountry();
         }
         return str;

@@ -5,12 +5,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import vitaliiev.forecast2023.domain.ForecastDataModel;
-import vitaliiev.forecast2023.dto.ForecastData;
-import vitaliiev.forecast2023.dto.ForecastDataOWM;
-import vitaliiev.forecast2023.dto.ForecastDataWeatherOWM;
-import vitaliiev.forecast2023.dto.SingleForecastDataPointForLocation;
+import vitaliiev.forecast2023.dto.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Vitalii Solomonov
@@ -22,6 +20,9 @@ public interface ForecastMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "locationTimestamp", ignore = true)
     ForecastDataModel dtoToModel(@Valid ForecastData forecast);
+
+    @Mapping(target = "id", ignore = true)
+    ForecastDataModel dtoToModel(@Valid ForecastData forecast, @Valid LocationTimestamp locationTimestamp);
 
     @Named("ForecastDataModelToDto")
     ForecastData modelToDTO(@Valid ForecastDataModel forecast);
@@ -51,6 +52,9 @@ public interface ForecastMapper {
 
     @Named("WeatherOwmToString")
     default String weatherOwmToString(List<ForecastDataWeatherOWM> weatherOWM) {
-        return weatherOWM.toString();
+        return weatherOWM.stream()
+                .map(ForecastDataWeatherOWM::getWeatherDescription)
+                .collect(Collectors.toList())
+                .toString();
     }
 }
