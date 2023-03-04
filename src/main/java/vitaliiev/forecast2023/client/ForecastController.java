@@ -1,4 +1,4 @@
-package vitaliiev.forecast2023.controller;
+package vitaliiev.forecast2023.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import vitaliiev.forecast2023.dto.ForecastForLocation;
 import vitaliiev.forecast2023.dto.ForecastRequest;
-import vitaliiev.forecast2023.dto.Location;
-import vitaliiev.forecast2023.service.LocationsService;
+import vitaliiev.forecast2023.dto.LocationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -22,35 +22,36 @@ import java.util.stream.Collectors;
  */
 @Controller
 @RequestMapping("/")
-public class Forecast {
+public class ForecastController {
+
+
+    private final ForecastService forecastService;
 
     @Autowired
-    private LocationsService locationsService;
+    public ForecastController(ForecastService forecastService) {
+        this.forecastService = forecastService;
+    }
 
     @GetMapping
-    public String getIndex(Model model) {
+    public String getIndex() {
         return "index";
     }
 
     @PostMapping
     public String getForecast(@ModelAttribute ForecastRequest forecastRequest, Model model) {
-        var locationList = forecastRequest.getLocations()
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(l -> !l.isBlank())
+        var forecast = this.forecastService.getForecast(forecastRequest);
+        var dates = forecast.stream()
+                .map(ForecastForLocation::getLocationTimestamp)
+                .map(LocationTimestamp::getTimestamp)
+                .map(LocalDateTime::toLocalDate)
                 .collect(Collectors.toList());
-        List<String> forecasts = this.locationsService
-                .findAllByDescription(locationList)
-                .stream()
-                .map(Location::toString)
-                .collect(Collectors.toList());
-        model.addAttribute("forecasts", forecasts);
+        model.addAttribute("dates", dates);
+        model.addAttribute("forecasts", this.forecastService.getForecast(forecastRequest));
         return "index";
     }
 
     @ModelAttribute
     public void addAttributes(Model model) {
-        // todo make UI form instead
         List<String> locations = new ArrayList<>();
         locations.add("Example: Moscow");
         locations.add("Example: Moscow, RU");
@@ -58,8 +59,7 @@ public class Forecast {
         locations.add("Example: Moscow, Idaho, US");
         locations.add("Example: Paris");
         model.addAttribute("locations", locations);
-        model.addAttribute("knownLocations", this.locationsService.findAllAsString());
+        model.addAttribute("knownLocations", this.forecastService.findAllAsString());
     }
-
 
 }
