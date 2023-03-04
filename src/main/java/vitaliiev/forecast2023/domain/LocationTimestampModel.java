@@ -1,11 +1,13 @@
 package vitaliiev.forecast2023.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,8 +15,7 @@ import java.util.List;
  * @date 25.02.2023
  */
 @Entity
-@Getter
-@Setter
+@Data
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "UniqueLocationAndTimestamp",
                 columnNames = {"location", "timestamp"})
@@ -26,14 +27,18 @@ public class LocationTimestampModel {
     private Long id;
 
     @PastOrPresent
+    @NotNull
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "location")
+    @ToString.Exclude
     private LocationModel location;
 
-    @OneToMany
-    private List<LocationTimestampModel> locationTimestamps;
+    @OneToMany(mappedBy = "locationTimestamp")
+    @ToString.Exclude
+    private List<ForecastDataModel> forecastData = new ArrayList<>();
 
 }

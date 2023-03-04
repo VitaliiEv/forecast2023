@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,8 +16,11 @@ import java.time.LocalDate;
  * @date 25.02.2023
  */
 @Entity
-@Getter
-@Setter
+@Data
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UniqueDateAndLocationTimestamp",
+                columnNames = {"locationTimestamp", "datetime"})
+})
 public class ForecastDataModel {
 
     @Id
@@ -54,8 +57,10 @@ public class ForecastDataModel {
     @Size(max = 50)
     private String windDirection;
 
-    @ManyToOne
     @NotNull
-    private LocationTimestampModel locationModel;
+    @ManyToOne
+    @JoinColumn(name = "locationTimestamp")
+    @ToString.Exclude
+    private LocationTimestampModel locationTimestamp;
 
 }
