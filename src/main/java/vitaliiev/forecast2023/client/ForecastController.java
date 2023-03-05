@@ -48,11 +48,6 @@ public class ForecastController {
                         .map(LocalDateTime::toLocalDate)
                         .collect(Collectors.toList()))
                 .orElseThrow();
-//        var dates = forecast.stream()
-//                .map(ForecastForLocation::getLocationTimestamp)
-//                .map(LocationTimestamp::getTimestamp)
-//                .map(LocalDateTime::toLocalDate)
-//                .collect(Collectors.toList());
         model.addAttribute("dates", dates);
         model.addAttribute("forecasts", forecast);
         return "index";

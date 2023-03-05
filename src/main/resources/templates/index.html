@@ -14,9 +14,6 @@
     <h3 th:text="#{index.search.title}">Enter locations</h3>
     <form method="POST" enctype="application/x-www-form-urlencoded"
           th:method="POST" th:object="${locations}" th:action="@{'/'}">
-        <!--                <ul th:if="${errors} ne null" class="text-warning">-->
-        <!--                    <li th:text="${errors}"/>-->
-        <!--                </ul>-->
         <div th:each="location, iterStat : ${locations}" class="row m-2 align-items-center">
             <div class="col-auto">
 
